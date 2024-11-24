@@ -78,9 +78,7 @@ const App = () => {
 
       {/* Pagination Controls */}
       <div className="pagination">
-        <button onClick={handlePreviousPage} disabled={currentPage === 1}>
-          Previous
-        </button>
+        <button onClick={handlePreviousPage}>Previous</button>
         <span className="count">{currentPage}</span>
         <button onClick={handleNextPage} disabled={currentPage === totalPages}>
           Next
