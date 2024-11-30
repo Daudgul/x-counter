@@ -1,124 +1,61 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
+import axios from "axios";
+const API_KEY = "17361a68e9c642538da83356243011";
 
 const App = () => {
-  const [countries, setCountries] = useState([]);
-  const [states, setStates] = useState([]);
-  const [cities, setCities] = useState([]);
-  const [selectedCountry, setSelectedCountry] = useState("");
-  const [selectedState, setSelectedState] = useState("");
-  const [selectedCity, setSelectedCity] = useState("");
+  const [city, setCity] = useState("");
+  const [weatherData, setWeatherData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    fetch("https://crio-location-selector.onrender.com/countries")
-      .then((response) => response.json())
-      .then((data) => setCountries(data))
-      .catch((error) => console.error("Error fetching countries:", error));
-  }, []);
+  // Function to fetch weather data based on city
+  const fetchWeather = async () => {
+    if (!city) return; // Prevent search if city input is empty
 
-  useEffect(() => {
-    if (selectedCountry) {
-      fetch(
-        `https://crio-location-selector.onrender.com/country=${selectedCountry}/states`
-      )
-        .then((response) => response.json())
-        .then((data) => setStates(data))
-        .catch((error) => console.error("Error fetching states:", error));
+    setLoading(true); // Show loading message
+    setError(null); // Reset any previous errors
+
+    try {
+      const response = await axios.get(
+        `https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${city}`
+      );
+      setWeatherData(response.data.current); // Set the weather data from API response
+      console.log(response.data);
+    } catch (error) {
+      alert("Failed to fetch weather data");
+      setError("Failed to fetch weather data"); // Show error if data fetch fails
+    } finally {
+      setLoading(false); // Hide loading message after fetching data
     }
-  }, [selectedCountry]);
-
-  useEffect(() => {
-    if (selectedCountry && selectedState) {
-      fetch(
-        `https://crio-location-selector.onrender.com/country=${selectedCountry}/state=${selectedState}/cities`
-      )
-        .then((response) => response.json())
-        .then((data) => setCities(data))
-        .catch((error) => console.error("Error fetching cities:", error));
-    }
-  }, [selectedCountry, selectedState]);
-
-  const handleCountryChange = (e) => {
-    setSelectedCountry(e.target.value);
-    setSelectedState("");
-    setSelectedCity("");
-    setStates([]);
-    setCities([]);
-  };
-
-  const handleStateChange = (e) => {
-    setSelectedState(e.target.value);
-    setSelectedCity("");
-    setCities([]);
-  };
-
-  // Handle city change
-  const handleCityChange = (e) => {
-    setSelectedCity(e.target.value);
   };
 
   return (
-    <div>
-      <h2>Location Selector</h2>
-
-      {/* <div> */}
-      <label htmlFor="country">Select Country</label>
-      <select
-        id="country"
-        value={selectedCountry}
-        onChange={handleCountryChange}
-      >
-        <option value="">Select a Country</option>
-        {countries.map((country) => (
-          <option key={country} value={country}>
-            {country}
-          </option>
-        ))}
-      </select>
-      {/* </div> */}
-
-      {/* {selectedCountry && ( */}
-      {/* <div> */}
-      <label htmlFor="state">Select State</label>
-      <select
-        id="state"
-        value={selectedState}
-        onChange={handleStateChange}
-        disabled={!selectedCountry}
-      >
-        <option value="">Select a State</option>
-        {states.map((state) => (
-          <option key={state} value={state}>
-            {state}
-          </option>
-        ))}
-      </select>
-      {/* </div> */}
-      {/* )} */}
-
-      {/* {selectedState && ( */}
-      {/* <div> */}
-      <label htmlFor="city">Select City</label>
-      <select
-        id="city"
-        value={selectedCity}
-        onChange={handleCityChange}
-        disabled={!selectedState}
-      >
-        <option value="">Select a City</option>
-        {cities.map((city) => (
-          <option key={city} value={city}>
-            {city}
-          </option>
-        ))}
-      </select>
-      {/* </div> */}
-      {/* )} */}
-
-      {selectedCity && (
-        <p>
-          You selected {selectedCity}, {selectedState}, {selectedCountry}
-        </p>
+    <div className="weather-app">
+      <h1>Weather Application</h1>
+      {/* Search Bar */}
+      <input
+        type="text"
+        placeholder="Enter city name"
+        value={city}
+        onChange={(e) => setCity(e.target.value)} // Update city name on change
+      />
+      <button onClick={fetchWeather}>Search</button>{" "}
+      {/* Trigger fetchWeather on click */}
+      {/* Loading message */}
+      {loading && <p>Loading data...</p>}
+      {/* Error message */}
+      {error && <p>{error}</p>}
+      {/* Display weather data if available */}
+      {weatherData && !loading && !error && (
+        <div className="weather-cards">
+          <div className="weather-card">
+            <p>Temperature: {weatherData.temp_c} °C</p>
+            <p>Humidity: {weatherData.humidity}%</p>
+            <p>Condition: {weatherData.condition.text}</p>
+            <p>Wind Speed: {weatherData.wind_kph} kph</p>
+          </div>
+        </div>
       )}
     </div>
   );
