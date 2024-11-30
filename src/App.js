@@ -1,89 +1,50 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./App.css";
 
 const App = () => {
-  const [employees, setEmployees] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [employeesPerPage] = useState(10);
-  const [totalPages, setTotalPages] = useState(0);
-  const [error, setError] = useState(null);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
 
-  useEffect(() => {
-    fetchEmployeeData();
-  }, []);
-
-  const fetchEmployeeData = async () => {
-    try {
-      const response = await fetch(
-        "https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json"
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch data");
-      }
-      const data = await response.json();
-      setEmployees(data);
-      setTotalPages(Math.ceil(data.length / employeesPerPage));
-    } catch (error) {
-      setError("Failed to fetch data");
-      alert(error.message);
+  // Handle login
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (username === "user" && password === "password") {
+      setMessage(`Welcome, ${username}`);
+    } else {
+      setMessage("Invalid username or password");
     }
-  };
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const handlePreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const getCurrentPageEmployees = () => {
-    const indexOfLastEmployee = currentPage * employeesPerPage;
-    const indexOfFirstEmployee = indexOfLastEmployee - employeesPerPage;
-    return employees.slice(indexOfFirstEmployee, indexOfLastEmployee);
   };
 
   return (
-    <div className="App">
-      <h1>Employee List</h1>
-
-      {/* Error message if any */}
-      {error && <p>{error}</p>}
-
-      {/* Table displaying employees */}
-      <table>
-        <thead>
-          <tr>
-            <th>Id</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
-          </tr>
-        </thead>
-        <tbody>
-          {getCurrentPageEmployees().map((employee, index) => (
-            <tr key={index}>
-              <td>{index}</td>
-              <td>{employee.name}</td>
-              <td>{employee.email}</td>
-              <td>{employee.role}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      {/* Pagination Controls */}
-      <div className="pagination">
-        <button onClick={handlePreviousPage}>Previous</button>
-        <span className="count">{currentPage}</span>
-        <button onClick={handleNextPage} disabled={currentPage === totalPages}>
-          Next
-        </button>
-      </div>
+    <div>
+      <h2>Login page</h2>
+      {message && <p>{message}</p>}
+      {message !== "Welcome user" && (
+        <form onSubmit={handleSubmit}>
+          <div>
+            <label htmlFor="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <button type="submit">Submit</button>
+        </form>
+      )}
     </div>
   );
 };
