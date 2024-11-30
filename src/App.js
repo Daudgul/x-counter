@@ -20,7 +20,7 @@ const App = () => {
     <div>
       <h2>Login page</h2>
       {message && <p>{message}</p>}
-      {message !== "Welcome user" && (
+      {message !== "Welcome, user" && (
         <form onSubmit={handleSubmit}>
           <div>
             <label htmlFor="username">Username</label>
