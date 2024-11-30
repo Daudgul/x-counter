@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import axios from "axios";
+// const API_KEY = "xyz"; // Replace with your actual API key
 const API_KEY = "17361a68e9c642538da83356243011";
 
 const App = () => {
@@ -9,50 +10,49 @@ const App = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Function to fetch weather data based on city
   const fetchWeather = async () => {
-    if (!city) return; // Prevent search if city input is empty
+    if (!city) return;
 
-    setLoading(true); // Show loading message
-    setError(null); // Reset any previous errors
+    setLoading(true);
+    setError(null);
 
     try {
       const response = await axios.get(
         `https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${city}`
       );
-      setWeatherData(response.data.current); // Set the weather data from API response
-      console.log(response.data);
+      setWeatherData(response.data.current);
     } catch (error) {
       alert("Failed to fetch weather data");
-      setError("Failed to fetch weather data"); // Show error if data fetch fails
+      setError("Failed to fetch weather data");
     } finally {
-      setLoading(false); // Hide loading message after fetching data
+      setLoading(false);
     }
   };
 
   return (
     <div className="weather-app">
       <h1>Weather Application</h1>
-      {/* Search Bar */}
       <input
         type="text"
         placeholder="Enter city name"
         value={city}
-        onChange={(e) => setCity(e.target.value)} // Update city name on change
+        onChange={(e) => setCity(e.target.value)}
       />
-      <button onClick={fetchWeather}>Search</button>{" "}
-      {/* Trigger fetchWeather on click */}
-      {/* Loading message */}
+      <button onClick={fetchWeather}>Search</button>
       {loading && <p>Loading data...</p>}
-      {/* Error message */}
       {error && <p>{error}</p>}
-      {/* Display weather data if available */}
       {weatherData && !loading && !error && (
         <div className="weather-cards">
           <div className="weather-card">
             <p>Temperature: {weatherData.temp_c} °C</p>
+          </div>
+          <div className="weather-card">
             <p>Humidity: {weatherData.humidity}%</p>
+          </div>
+          <div className="weather-card">
             <p>Condition: {weatherData.condition.text}</p>
+          </div>
+          <div className="weather-card">
             <p>Wind Speed: {weatherData.wind_kph} kph</p>
           </div>
         </div>
