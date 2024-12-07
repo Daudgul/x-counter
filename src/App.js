@@ -8,42 +8,48 @@ const customDictionary = {
 };
 
 const SpellCheckApp = () => {
-  const [inputText, setInputText] = useState("");
-  const [suggestedText, setSuggestedText] = useState("");
+  const [dictionary] = useState([
+    {
+      word: "React",
+      meaning: "A JavaScript library for building user interfaces.",
+    },
+    { word: "Component", meaning: "A reusable building block in React." },
+    { word: "State", meaning: "An object that stores data for a component." },
+  ]);
 
-  const handleInputChange = (e) => {
-    const text = e.target.value;
-    setInputText(text);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [definition, setDefinition] = useState("");
 
-    const words = text.split(" ");
-    const correctedWords = words.map((word) => {
-      const correctedWord = customDictionary[word.toLowerCase()];
-      return correctedWord || word;
-    });
-
-    const correctedText = correctedWords.join(" ");
-
-    const firstCorrection = correctedWords.find(
-      (word, index) => word !== words[index]
+  const handleSearch = () => {
+    const foundWord = dictionary.find(
+      (entry) => entry.word.toLowerCase() === searchTerm.toLowerCase()
     );
-    setSuggestedText(firstCorrection || "");
+
+    if (foundWord) {
+      setDefinition(foundWord.meaning);
+    } else {
+      setDefinition("Word not found in the dictionary.");
+    }
   };
 
   return (
     <div>
-      <h1>Spell Check and Auto-Correction</h1>
-      <textarea
-        value={inputText}
-        onChange={handleInputChange}
-        placeholder="Enter text..."
-        rows={5}
-        cols={40}
-      />
-      {suggestedText && (
-        <p>
-          Did you mean: <strong>{suggestedText}</strong>?
-        </p>
-      )}
+      <h1>Dictionary App</h1>
+
+      <div>
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Enter a word"
+        />
+
+        <button onClick={handleSearch}>Search</button>
+      </div>
+
+      <div>
+        <p>{definition}</p>
+      </div>
     </div>
   );
 };
