@@ -48,6 +48,7 @@ const SpellCheckApp = () => {
       </div>
 
       <div>
+        <p>Definition:</p>
         <p>{definition}</p>
       </div>
     </div>
