@@ -1,56 +1,62 @@
 import React, { useState } from "react";
 
-const customDictionary = {
-  teh: "the",
-  wrok: "work",
-  fot: "for",
-  exampl: "example",
-};
-
 const SpellCheckApp = () => {
-  const [dictionary] = useState([
-    {
-      word: "React",
-      meaning: "A JavaScript library for building user interfaces.",
-    },
-    { word: "Component", meaning: "A reusable building block in React." },
-    { word: "State", meaning: "An object that stores data for a component." },
+  const [data, setData] = useState([
+    { date: "2022-09-01", views: 100, article: "Article 1" },
+    { date: "2023-09-01", views: 100, article: "Article 1" },
+    { date: "2023-09-02", views: 150, article: "Article 2" },
+    { date: "2023-09-02", views: 120, article: "Article 3" },
+    { date: "2020-09-03", views: 200, article: "Article 4" },
   ]);
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [definition, setDefinition] = useState("");
+  const sortByDate = () => {
+    const sortD = [...data].sort((a, b) => {
+      if (b.date !== a.date) {
+        return new Date(b.date) - new Date(a.date);
+      }
+      return b.views - a.views;
+    });
+    setData(sortD);
+  };
 
-  const handleSearch = () => {
-    const foundWord = dictionary.find(
-      (entry) => entry.word.toLowerCase() === searchTerm.toLowerCase()
-    );
-
-    if (foundWord) {
-      setDefinition(foundWord.meaning);
-    } else {
-      setDefinition("Word not found in the dictionary.");
-    }
+  const sortByViews = () => {
+    const sortD = [...data].sort((a, b) => {
+      if (b.views !== a.views) {
+        return b.views - a.views;
+      }
+      return new Date(b.date) - new Date(a.date);
+    });
+    setData(sortD);
   };
 
   return (
     <div>
-      <h1>Dictionary App</h1>
+      <h1>Date and Views Table</h1>
+      <button onClick={sortByDate}>Sort by Date</button>
+      <button onClick={sortByViews}>Sort by Views</button>
 
-      <div>
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Enter a word"
-        />
-
-        <button onClick={handleSearch}>Search</button>
-      </div>
-
-      <div>
-        <p>Definition:</p>
-        <p>{definition}</p>
-      </div>
+      <table
+        border="1"
+        cellPadding="10"
+        style={{ marginTop: "20px", width: "100%" }}
+      >
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Views</th>
+            <th>Article</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((row, index) => (
+            <tr key={index}>
+              <td>{row.date}</td>
+              <td>{row.views}</td>
+              <td>{row.article}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
