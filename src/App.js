@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./App.css"; // Importing the CSS for modal styling.
+import "./App.css"; /
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -16,18 +16,15 @@ function App() {
     dob: "",
   });
 
-  // Open the modal
   const openModal = () => {
     setIsModalOpen(true);
   };
 
-  // Close the modal
   const closeModal = () => {
     setIsModalOpen(false);
     resetForm();
   };
 
-  // Reset the form data and errors
   const resetForm = () => {
     setFormData({
       username: "",
@@ -43,7 +40,6 @@ function App() {
     });
   };
 
-  // Handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -52,18 +48,15 @@ function App() {
     });
   };
 
-  // Validate form fields
   const validateForm = () => {
     let isValid = true;
     const newErrors = { username: "", email: "", phone: "", dob: "" };
 
-    // Validate Username
     if (!formData.username) {
       newErrors.username = "Username is required";
       isValid = false;
     }
 
-    // Validate Email
     if (!formData.email) {
       newErrors.email = "Email is required";
       isValid = false;
@@ -72,7 +65,6 @@ function App() {
       isValid = false;
     }
 
-    // Validate Phone
     if (!formData.phone) {
       newErrors.phone = "Phone number is required";
       isValid = false;
@@ -83,7 +75,6 @@ function App() {
       isValid = false;
     }
 
-    // Validate Date of Birth
     if (!formData.dob) {
       newErrors.dob = "Date of Birth is required";
       isValid = false;
@@ -100,7 +91,6 @@ function App() {
     return isValid;
   };
 
-  // Handle form submit
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
@@ -109,7 +99,6 @@ function App() {
     }
   };
 
-  // Close modal if clicked outside the modal
   const handleModalClick = (e) => {
     if (e.target.className === "modal") {
       closeModal();
